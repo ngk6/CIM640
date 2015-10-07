@@ -1,42 +1,36 @@
-xPoints = [];
-yPoints = [];
+var Ball = function(x, y) {
+  this.x = x;
+  this.y = y;
+  this.diameter = 10;
+  this.color = color(random(255), random(255), random(255));
+}
+
+Ball.prototype.show = function() {
+  ellipse(this.x, this.y, this.diameter, this.diameter);
+}
+
+Ball.prototype.fall = function() {
+  fill(this.color); 
+  this.y = this.y + 1;
+}
+
+var balls = [];
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight); 
-
-  for(var i = 0; i < 100; i++){
-    xPoints.push(random(width));
-    yPoints.push(random(height));
-  }
-
 }
 
 function draw() {
+
   background(0);
 
-  for(var i = 0; i < xPoints.length; i++) {  
-    rect(xPoints[i], yPoints[i], 40, 40);
-  }
-
-}
-
-function keyPressed() {
-  if (keyCode == RIGHT_ARROW) {
-    for(var i = 0; i < xPoints.length; i++) {
-      xPoints[i] = xPoints[i] + 40;
-    }
-  }
-  else if (keyCode == LEFT_ARROW) {
-    for(var i = 0; i < xPoints.length; i++) {
-      xPoints[i] = xPoints[i] - 40;
-      if (xPoints[i] > width) {
-        xPoints[i] = random(width);
-      }
-    }
+  for (var i = 0; i < balls.length; i++) {
+    balls[i].show();
+    balls[i].fall();
   }
 }
 
-
-//Make 100 squares appear at random coordinates on the canvas.
-//When the left arrow is pressed, the squares move left
-//and right arrow makes them move right.
+function mousePressed() {
+  balls.push( new Ball(mouseX, mouseY) );
+}
