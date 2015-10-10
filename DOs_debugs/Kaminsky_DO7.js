@@ -44,7 +44,13 @@ var Raindrop = function (originX,originY) {
 	}
 
 	Raindrop.prototype.fall = function() {
-		this.originY = this.originY + 4;
+		this.originY = (this.originY + random(1,15));
+		// if (Raindrop.prototype < windowHeight/3*2) {
+		// 	Raindrop.prototype == 0);
+		// }
+
+		// loop var i ?
+		//try mouseX + i, try math functions ?
 	}
 }
 
@@ -76,7 +82,12 @@ function draw() {
 function mousePressed() {
 	if (mouseY > windowHeight/3*2) {
 		flowers.push(new Flower (mouseX,mouseY));
-	} else if (mouseY < windowHeight/3*2) {
+	}
+}
+
+function mouseDragged() {
+	if (mouseY < windowHeight/3*2) {
 		raindrops.push(new Raindrop (mouseX,mouseY));
 	}
 }
+
