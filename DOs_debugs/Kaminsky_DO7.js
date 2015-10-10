@@ -40,11 +40,11 @@ var Raindrop = function (originX,originY) {
 
 		fill(0, 51, 204);
 		noStroke();
-		ellipse(x, y, 10, 10);
+		ellipse(x, y, 5, 5);
 	}
 
 	Raindrop.prototype.fall = function() {
-		this.originY = (this.originY + random(1,15));
+		this.originY = (this.originY + random(1,10));
 		// if (Raindrop.prototype < windowHeight/3*2) {
 		// 	Raindrop.prototype == 0);
 		// }
