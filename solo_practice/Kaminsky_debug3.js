@@ -1,12 +1,8 @@
 var Squoo = function(originX,originY) {
   this.originX = originX;
   this.originY = originY;
-  var x = this.originX;
-  var y = this.originY;
-  this.x = x;
-  this.y = y;
-  // this.x = originX;
-  // this.y = originY;
+  this.x = this.originX;
+  this.y = this.originY;
   this.width = random(3,15);
   this.height = this.width;
   this.fromColor = color(random(255), 0, 0);
@@ -32,24 +28,25 @@ var Squoo = function(originX,originY) {
   this.move = function() {
                 this.x += this.directionX;
                 this.y += this.directionY;
-                if (x >= originX + this.boxWidth && y <= originY) {
-                    directionX = 0;
-                    directionY = 1;
+                if ((this.x >= (originX + this.boxWidth)) && (this.y <= originY)) {
+                    this.directionX = 0;
+                    this.directionY = 1;
 
                 }
-                else if (this.x >= this.originX + this.boxWidth && this.y >= this.originY + this.boxHeight) {
-                    directionX = -1;
-                    directionY = 0;
+                else if ((this.x >= (this.originX + this.boxWidth)) && (this.y >= this.originY + this.boxHeight)) {
+                    this.directionX = -1;
+                    this.directionY = 0;
                 }
 
-                else if (this.x <= this.originX && this.y >= this.originY + this.boxHeight) {
-                    directionX = 0;
-                    directionY = -1;
+                else if ((this.x <= (this.originX)) && (this.y >= this.originY + this.boxHeight))
+                {
+                    this.directionX = 0;
+                    this.directionY = -1;
                 }
 
-                else if (this.x <= this.originX && this.y <= this.originY) {
-                    directionX = 1;
-                    directonY  = 0;
+                else if ((this.x <= (this.originX)) && (this.y <= this.originY)) {
+                    this.directionX = 1;
+                    this.directonY  = 0;
                 }
 
               }
