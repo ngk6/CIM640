@@ -22,7 +22,6 @@ var Sun = function() {
 
 		var sunrays = [];
 
-		//make it a for loop? line(800, 100, random(windowWidth), random(windowHeight));
 		for (var i = 0; i < 10; i++) {
 			sunrays[i] = line(800, 100, random(600, 1000), random(50, 150));
 		}
@@ -36,45 +35,96 @@ var Sun = function() {
 	this.displayCloudy = function() {
 	}
 }
-	
+
+var Raindrop = function (originX,originY) {
+	this.x = originX;
+	this.y = originY;
+	this.speed = random(1, 10);
+
+	this.display = function() {
+		fill("darkBlue");
+		noStroke();
+		ellipse(this.x, this.y, 5, 5);
+	}
+
+	this.fall = function() {
+		this.y = this.y + this.speed;
+		if (this.y > windowHeight) {
+			this.y = 0;
+			this.speed = random(1, 10);
+		}
+	}
+}
+
 var Rain = function() {
+	this.raindrops = [];
+	this.init = function() {
+		for (var i = 0; i < 100; i++) {
+			this.raindrops.push(new Raindrop (random(windowWidth), random(windowHeight)));
+		}	
+	}
 	this.displaySunny = function() {
 	}
 	this.displayRainy = function() {
-	
-		var raindrops = [];
-	
 		for (var i = 0; i < 100; i++) {
-			raindrops[i] =  fill(0, 51, 204);
-							noStroke();
-							ellipse(this.x, this.y, 5, 5);
+			var aRaindrop = this.raindrops[i];
+			aRaindrop.fall();
+			aRaindrop.display();
 		}
-		
-// 		for (var i = 0; i < raindrops.length; i++) {
-// 		}
-// 		this.fall = function() {
-// 		this.y = (this.y + random(1,10));
-// 	}
+	}
+	this.init();	
+}
+		// for (var i = 0; i < raindrops.length; i++) {
+  // 			raindrops[i].display();
+  // 		}
 
-		var Raindrop = function (originX,originY) {
-		this.x = originX;
-		this.y = originY;
-
-		for (var i = 0; i < raindrops.length; i++) {
-  			raindrops[i].display();
-  		}
-  		}
 //   			raindrops[i].fall();
 //   		}
 //   		if (raindrops[i].y > random(windowHeight/3*2, (windowHeight*1.5))) {
 //   			raindrops.splice(i,1);
 // 		}
 // 	}	
-}
+
+var Cloudpuff = function (originX,originY) {
+	this.x = originX;
+	this.y = originY;
+	this.speed = random(1, 3);
+
+	this.display = function() {
+		fill(255);
+		noStroke();
+		ellipse(this.x, this.y, 20, 20);
+	}
+	this.move = function() {
+		this.x = this.x + this.speed;
+		if (this.x > windowWidth) {
+			this.x = 0;
+			this.speed = random(1, 3);
+		}
+	}
 }
 
-// var Cloud = function() {
-// 	this.displayCloud = function () {
+var Clouds = function() {
+	this.clouds = [];
+	this.init = function() {
+		for (var i = 0; i < 100; i++) {
+			this.clouds.push(new Cloudpuff (random(windowWidth), random(windowHeight/3)));
+		}
+	}
+	this.displaySunny = function() {
+	}
+	this.displayRainy = function() {
+	}
+	this.displayCloudy = function() {
+		for (var i = 0; i < 100; i++) {
+			var aCloud = this.clouds[i];
+			aCloud.move();
+			aCloud.display();
+		}
+	}
+	this.init();
+}
+
 // 		fill(255);
 // 		noStroke();
 // 		ellipse(random(windowWidth), random(windowHeight/3*2), 30, 30);
@@ -104,10 +154,15 @@ var Flower = function (originX,originY) {
 
 
 function setup() {
-   createCanvas(windowWidth, windowHeight);
-   flowerColor = document.getElementById('colorSelector');
-   weatherState = 1;
+	createCanvas(windowWidth, windowHeight);
+	flowerColor = document.getElementById('colorSelector');
+	weatherState = 1;
+	
+	theSun = new Sun();
 
+	theRain = new Rain();
+
+	theClouds = new Clouds();
  }  	
   
 function draw() {
@@ -122,17 +177,15 @@ function draw() {
 
 	fill(flowerColor.value);
 
-	theSun = new Sun();
-
-	theRain = new Rain();
-
 	if (weatherState === 1) {
 		theSun.displaySunny();
 	}  else if (weatherState === 2) {
 		theSun.displayRainy();
-		theClouds.displayRainy();
+		theRain.displayRainy();
+		// theClouds.displayRainy();
 	}  else if (weatherState === 3) {
-		theSun.displaySunny();
+		theSun.displayCloudy();
+		// theRain.displayCloudy();
 		theClouds.displayCloudy();
 	}
 
@@ -152,9 +205,9 @@ function mousePressed() {
 	}
 }
 
-// function mouseDragged() {
-// 		raindrops.push(new Raindrop (width/2, height/2));
-// 	}
+function mouseDragged() {
+		raindrops.push(new Raindrop (mouseX, mouseY));
+	}
 
 function keyTyped() {
 	if (key === "s") {
@@ -168,12 +221,6 @@ function keyTyped() {
 	}
 
 }
-
-// function keyTyped() {
-// 	if (key === "c") {
-// 		clouds.push(new Cloud () );
-// 	}
-// }
 
 
 
