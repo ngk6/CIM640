@@ -88,26 +88,36 @@ var Rain = function() {
 var Cloudpuff = function (originX,originY) {
 	this.x = originX;
 	this.y = originY;
-	this.speed = random(1, 3);
+	this.speed = .5;
 
 	this.display = function() {
-		fill(255);
-		noStroke();
-		ellipse(this.x, this.y, 20, 20);
+		var puffs = [];
+		for (var i = 0; i < 15; i++) {
+			puffs[i] = fill(255);
+						noStroke();
+						ellipse(this.x, this.y, 50, 50);
+						ellipse(this.x + 10, this.y + 20, 50, 50);
+						ellipse(this.x - 20, this.y + 20, 40, 40);
+						ellipse(this.x + 20, this.y - 10, 50, 50);
+						ellipse(this.x - 20, this.y - 20, 50, 50);
+						ellipse(this.x - 40, this.y - 20, 50, 50);
+						//how to randomize the cloud formation each time?
+						
+		}
 	}
 	this.move = function() {
 		this.x = this.x + this.speed;
 		if (this.x > windowWidth) {
 			this.x = 0;
-			this.speed = random(1, 3);
+			this.speed = .5;
 		}
-	}
+	}	
 }
 
 var Clouds = function() {
 	this.clouds = [];
 	this.init = function() {
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 15; i++) {
 			this.clouds.push(new Cloudpuff (random(windowWidth), random(windowHeight/3)));
 		}
 	}
@@ -116,7 +126,7 @@ var Clouds = function() {
 	this.displayRainy = function() {
 	}
 	this.displayCloudy = function() {
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 15; i++) {
 			var aCloud = this.clouds[i];
 			aCloud.move();
 			aCloud.display();
