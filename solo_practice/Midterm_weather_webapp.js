@@ -114,6 +114,7 @@ var Cloudpuff = function (originX,originY) {
 	}	
 }
 
+
 var Clouds = function() {
 	this.clouds = [];
 	this.init = function() {
