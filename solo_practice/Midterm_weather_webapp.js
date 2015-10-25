@@ -5,10 +5,10 @@ flowers = [];
 var weatherState;
 // 1 = sunny, 2 = rainy, 3 = cloudy
 
-var theSun
+var theSun;
 var theRain;
 var theClouds;
-var theSkyGround;
+var theSky;
 var flowerColor;
 
 var Sun = function() {
@@ -22,13 +22,10 @@ var Sun = function() {
 
 		var sunrays = [];
 
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 4; i++) {
 			sunrays[i] = line(800, 100, random(600, 1000), random(50, 150));
+			//modulo
 		}
-
-		// for (var i = 0; i < sunrays.length; i++) {
-		// 	sunrays[i].display();
-		// }
 	}
 	this.displayRainy = function() {
 	}	
@@ -39,7 +36,7 @@ var Sun = function() {
 var Raindrop = function (originX,originY) {
 	this.x = originX;
 	this.y = originY;
-	this.speed = random(1, 10);
+	this.speed = random(3, 9);
 
 	this.display = function() {
 		fill("darkBlue");
@@ -51,39 +48,38 @@ var Raindrop = function (originX,originY) {
 		this.y = this.y + this.speed;
 		if (this.y > windowHeight) {
 			this.y = 0;
-			this.speed = random(1, 10);
-		}
+			this.speed = random(3, 9);
+		}	
 	}
 }
 
 var Rain = function() {
 	this.raindrops = [];
 	this.init = function() {
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 200; i++) {
 			this.raindrops.push(new Raindrop (random(windowWidth), random(windowHeight)));
+		}
+		if (raindrops[i] > random(windowHeight/3*2, (windowHeight*1.5))) {
+			raindrops.splice(i,1);
 		}	
 	}
 	this.displaySunny = function() {
 	}
+	this.displayCloudy = function() {
+	}
+	this.displaySky = function() {
+		background = color("gray");
+	}
 	this.displayRainy = function() {
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 200; i++) {
 			var aRaindrop = this.raindrops[i];
 			aRaindrop.fall();
 			aRaindrop.display();
 		}
 	}
 	this.init();	
-}
-		// for (var i = 0; i < raindrops.length; i++) {
-  // 			raindrops[i].display();
-  // 		}
 
-//   			raindrops[i].fall();
-//   		}
-//   		if (raindrops[i].y > random(windowHeight/3*2, (windowHeight*1.5))) {
-//   			raindrops.splice(i,1);
-// 		}
-// 	}	
+}	
 
 var Cloudpuff = function (originX,originY) {
 	this.x = originX;
@@ -101,8 +97,7 @@ var Cloudpuff = function (originX,originY) {
 						ellipse(this.x + 20, this.y - 10, 50, 50);
 						ellipse(this.x - 20, this.y - 20, 50, 50);
 						ellipse(this.x - 40, this.y - 20, 50, 50);
-						//how to randomize the cloud formation each time?
-						
+						//how to randomize the cloud formation each time?				
 		}
 	}
 	this.move = function() {
@@ -114,15 +109,22 @@ var Cloudpuff = function (originX,originY) {
 	}	
 }
 
-
 var Clouds = function() {
 	this.clouds = [];
 	this.init = function() {
 		for (var i = 0; i < 15; i++) {
 			this.clouds.push(new Cloudpuff (random(windowWidth), random(windowHeight/3)));
 		}
+		// if (clouds[i] > windowWidth) {
+		// 	clouds.splice(i,1);
+		// 	clouds[i] = 0;
+		// }
 	}
 	this.displaySunny = function() {
+		fill(255, 230, 0); 
+		noStroke();
+		ellipse(800, 100, 80, 80);
+		//why doesn't the sun show up in var Clouds?
 	}
 	this.displayRainy = function() {
 	}
@@ -135,12 +137,6 @@ var Clouds = function() {
 	}
 	this.init();
 }
-
-// 		fill(255);
-// 		noStroke();
-// 		ellipse(random(windowWidth), random(windowHeight/3*2), 30, 30);
-// 	}
-// }
 
 var Flower = function (originX,originY) {
 	this.originX = originX;
@@ -159,10 +155,9 @@ var Flower = function (originX,originY) {
 
 		fill(255,255,255);
 		noStroke();
-		ellipse(x, y, 20, 20);
+		ellipse(x, y, 15, 15);
 	}
 }
-
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -178,9 +173,6 @@ function setup() {
   
 function draw() {
 	background(128, 204, 255);
-	// fill(255, 230, 0); 
-	// noStroke();
-	// ellipse(800, 100, 80, 80);
 	
 	fill(51, 204, 51);
 	noStroke();
@@ -190,10 +182,13 @@ function draw() {
 
 	if (weatherState === 1) {
 		theSun.displaySunny();
+		// theRain.displaySunny();
+		// theClouds.displaySunny();
 	}  else if (weatherState === 2) {
-		theSun.displayRainy();
+		// theSun.displayRainy();
 		theRain.displayRainy();
 		// theClouds.displayRainy();
+		// theSky.displayRainy();
 	}  else if (weatherState === 3) {
 		theSun.displayCloudy();
 		// theRain.displayCloudy();
@@ -209,7 +204,6 @@ function draw() {
 	}	
  }
 
-
 function mousePressed() {
 	if (mouseY > windowHeight/3*2) {
 		flowers.push(new Flower (mouseX,mouseY));
@@ -221,9 +215,7 @@ function mouseDragged() {
 	}
 
 function keyTyped() {
-	if (key === "s") {
-		new Sunshine ();
-	} else if (key === "1") {
+	if (key === "1") {
 		weatherState = 1; //sunny
 	} else if (key === "2") {
 		weatherState = 2; //rainy
