@@ -11,6 +11,13 @@ var theClouds;
 var theSky;
 var flowerColor;
 
+var base_url = "http://api.openweathermap.org/data/2.5/forecast";
+var city_url = "?q=Miami";
+var app_id = "&appid=cb46f7f4d9b620ca18c65ee7eaad868b";
+var units = "&units=imperial";
+var temp;
+
+
 var Sun = function() {
 	this.displaySunny = function() {
 		fill(255, 230, 0); 
@@ -91,6 +98,7 @@ var Cloudpuff = function (originX,originY) {
 		for (var i = 0; i < 15; i++) {
 			puffs[i] = fill(255);
 						noStroke();
+						//stroke(0);
 						ellipse(this.x, this.y, 50, 50);
 						ellipse(this.x + 10, this.y + 20, 50, 50);
 						ellipse(this.x - 20, this.y + 20, 40, 40);
@@ -102,8 +110,8 @@ var Cloudpuff = function (originX,originY) {
 	}
 	this.move = function() {
 		this.x = this.x + this.speed;
-		if (this.x > windowWidth) {
-			this.x = 0;
+		if (this.x > windowWidth +40) {
+			this.x = -40;
 			this.speed = .5;
 		}
 	}	
@@ -115,10 +123,7 @@ var Clouds = function() {
 		for (var i = 0; i < 15; i++) {
 			this.clouds.push(new Cloudpuff (random(windowWidth), random(windowHeight/3)));
 		}
-		// if (clouds[i] > windowWidth) {
-		// 	clouds.splice(i,1);
-		// 	clouds[i] = 0;
-		// }
+
 	}
 	this.displaySunny = function() {
 		fill(255, 230, 0); 
@@ -169,6 +174,9 @@ function setup() {
 	theRain = new Rain();
 
 	theClouds = new Clouds();
+
+	var url = base_url + city_url + app_id + units;
+  	loadJSON(url, gotWeather);
  }  	
   
 function draw() {
@@ -222,6 +230,30 @@ function keyTyped() {
 	} else if (key === "3") {
 		weatherState = 3; //cloudy
 	}
+
+}
+
+function gotWeather(weather) {
+  //Position 0 is the first item in the list
+  //each one is 3 hours apart
+  condition = weather.list[0].weather[0].main;
+  print()
+
+  if (condition === "Sun") {
+  	weatherState = 1;
+  } else if (condition === "Rain") {
+  	weatherState = 2;
+
+  } else if (condition === "Clouds") {
+  	weatherState = 3;
+  } else {
+
+  }
+
+
+
+  // clouds = weather.list[0].all.clouds
+
 
 }
 
