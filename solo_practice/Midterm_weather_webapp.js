@@ -1,7 +1,7 @@
 raindrops = [];
 clouds = [];
 flowers = [];
-var frameCounter =0;
+var frameCounter = 0;
 
 var weatherState;
 // 1 = sunny, 2 = rainy, 3 = cloudy
@@ -13,39 +13,35 @@ var theSky;
 var flowerColor;
 
 var base_url = "http://api.openweathermap.org/data/2.5/forecast";
-var city_url = "?q=Miami";
+var city_url = "?q=miami";
 var app_id = "&appid=cb46f7f4d9b620ca18c65ee7eaad868b";
 var units = "&units=imperial";
-var temp;
 
-
-//
+var inp;
 
 var Sunray = function (originX,originY) {
 	this.x = originX;
 	this.y = originY;
 	this.radius = 65;
-	this.angle = Math.random()*Math.PI*2;
-	this.x2 = Math.cos(this.angle)*this.radius;
-	this.y2 = Math.sin(this.angle)*this.radius;
+	this.angle = Math.random() * Math.PI * 2;
+	this.x2 = Math.cos(this.angle) * this.radius;
+	this.y2 = Math.sin(this.angle) * this.radius;
 	this.display = function() {
 			stroke(255, 230, 0);
-			strokeWeight(8);
-			line(this.x, this.y, this.x+ this.x2 ,this.y +this.y2);
+			strokeWeight(7);
+			line(this.x, this.y, this.x + this.x2 ,this.y + this.y2);
 	}
 }
-
 
 var Sun = function(originX,originY) {
 	this.x = originX;
 	this.y = originY;
 	this.sunrays = [];
-	this.numberOfSunrays = 20;
+	this.numberOfSunrays = 10;
 	this.init = function() {
 		for (var i = 0; i < this.numberOfSunrays; i++) {
 			this.sunrays[i] = new Sunray(this.x, this.y);
 		}
-
 	}
 
 	this.displaySunny = function() {
@@ -60,15 +56,6 @@ var Sun = function(originX,originY) {
 		}
 		frameCounter ++;
 
-
-		// for (var i = 0; i < 4; i++) {
-		// 	sunrays[i] = line(800, 100, random(600, 1000), random(50, 150));
-		// }
-			//modulo if the counter mod 2 = 0, then draw th rays
-			// frame counter, if counter = 0, you draw the rays. if not 0 then we dont do it. 
-			//increment the counter no matter what. if the counter is more than 2 (or desired speed), set it to 0.
-
-		
 	}
 	this.displayRainy = function() {
 	}	
@@ -106,15 +93,16 @@ var Rain = function() {
 		}
 		if (raindrops[i] > random(windowHeight/3*2, (windowHeight*1.5))) {
 			raindrops.splice(i,1);
-		}	
-	}
+		}
+	}	
+		
 	this.displaySunny = function() {
 	}
 	this.displayCloudy = function() {
 	}
 	this.displaySky = function() {
-		background = color("gray");
 	}
+	
 	this.displayRainy = function() {
 		for (var i = 0; i < 200; i++) {
 			var aRaindrop = this.raindrops[i];
@@ -122,8 +110,8 @@ var Rain = function() {
 			aRaindrop.display();
 		}
 	}
+	
 	this.init();	
-
 }	
 
 var Cloudpuff = function (originX,originY) {
@@ -132,16 +120,16 @@ var Cloudpuff = function (originX,originY) {
 	this.speed = .5;
 	this.display = function() {
 		for (var i = 0; i < 15; i++) {
-			fill(255);
+			if (weatherState == 3) {
+				fill(255);
+			} 
 			noStroke();
-			//stroke(0);
 			ellipse(this.x, this.y, 50, 50);
 			ellipse(this.x + 10, this.y + 20, 50, 50);
 			ellipse(this.x - 20, this.y + 20, 40, 40);
 			ellipse(this.x + 20, this.y - 10, 50, 50);
 			ellipse(this.x - 20, this.y - 20, 50, 50);
-			ellipse(this.x - 40, this.y - 20, 50, 50);
-			//how to randomize the cloud formation each time?				
+			ellipse(this.x - 40, this.y - 20, 50, 50);				
 		}
 	}
 	this.move = function() {
@@ -159,13 +147,11 @@ var Clouds = function() {
 		for (var i = 0; i < 15; i++) {
 			this.clouds.push(new Cloudpuff (random(windowWidth), random(windowHeight/3)));
 		}
-
 	}
 	this.displaySunny = function() {
 		fill(255, 230, 0); 
 		noStroke();
 		ellipse(800, 100, 80, 80);
-		//why doesn't the sun show up in var Clouds?
 	}
 	this.displayRainy = function() {
 	}
@@ -200,16 +186,32 @@ var Flower = function (originX,originY) {
 	}
 }
 
+function changeCity(){
+
+	city_url = "?q=" + inp.value();
+	var url = base_url + city_url + app_id + units;
+  	loadJSON(url, gotWeather);
+  	console.log('you are typing: ',inp.value());
+}
+
 function setup() {
+	inp = createInput('City');
+	inp.position(100, 30);
+	var button = createButton('submit');
+  	button.position(250, 30);
+  	button.mousePressed(changeCity);
+
 	createCanvas(windowWidth, windowHeight);
 	flowerColor = document.getElementById('colorSelector');
+	cityName = document.getElementById('createButton');
+
 	weatherState = 1;
 	
 	theSun = new Sun(800, 100);
 
 	theRain = new Rain();
 
-	theClouds = new Clouds();
+	theClouds = new Clouds(800, 100);
 
 	var url = base_url + city_url + app_id + units;
   	loadJSON(url, gotWeather);
@@ -224,6 +226,10 @@ function draw() {
 
 	fill(flowerColor.value);
 
+	for (var i = 0; i < flowers.length; i++) {
+  		flowers[i].display();
+  	}
+
 	if (weatherState === 1) {
 		theSun.displaySunny();
 		// theRain.displaySunny();
@@ -237,14 +243,6 @@ function draw() {
 		theSun.displayCloudy();
 		// theRain.displayCloudy();
 		theClouds.displayCloudy();
-	}
-
-  	for (var i = 0; i < flowers.length; i++) {
-  		flowers[i].display();
-  	}
- 
-	for (var i = 0; i < clouds.length; i++) {
-		clouds[i].display();
 	}	
  }
 
@@ -253,10 +251,6 @@ function mousePressed() {
 		flowers.push(new Flower (mouseX,mouseY));
 	}
 }
-
-function mouseDragged() {
-		raindrops.push(new Raindrop (mouseX, mouseY));
-	}
 
 function keyTyped() {
 	if (key === "1") {
@@ -270,12 +264,10 @@ function keyTyped() {
 }
 
 function gotWeather(weather) {
-  //Position 0 is the first item in the list
-  //each one is 3 hours apart
-  condition = weather.list[0].weather[0].main;
-  print()
+  var condition = weather.list[0].weather[0].main;
+  print(condition);
 
-  if (condition === "Sun") {
+  if (condition === "Clear") {
   	weatherState = 1;
   } else if (condition === "Rain") {
   	weatherState = 2;
@@ -285,11 +277,6 @@ function gotWeather(weather) {
   } else {
 
   }
-
-
-
-  // clouds = weather.list[0].all.clouds
-
 
 }
 
