@@ -1,36 +1,31 @@
-var Ball = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.diameter = 10;
-  this.color = color(random(255), random(255), random(255));
-}
-
-Ball.prototype.show = function() {
-  ellipse(this.x, this.y, this.diameter, this.diameter);
-}
-
-Ball.prototype.fall = function() {
-  fill(this.color); 
-  this.y = this.y + 1;
-}
-
-var balls = [];
-
+var mic;
+var micOn;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight); 
+  // uncomment this line to make the canvas the full size of the window
+   createCanvas(windowWidth, windowHeight);
+   // the volume is a number between 0 and 1
+   mic = new p5.AudioIn();
+   micOn = false;
 }
 
 function draw() {
-
-  background(0);
-
-  for (var i = 0; i < balls.length; i++) {
-    balls[i].show();
-    balls[i].fall();
+  // draw stuff here
+  background(255);
+  if (micOn) {
+    var micLevel = mic.getLevel();
+    var circleSize = map(micLevel, 0, 1, 0, width);
+    fill(0);
+    ellipse(width/2, height/2, circleSize, circleSize);
   }
 }
 
 function mousePressed() {
-  balls.push( new Ball(mouseX, mouseY) );
+  micOn = !micOn;
+  if (micOn) {
+    mic.start();
+  }
+  else {
+    mic.stop();
+  }
 }

@@ -31,26 +31,17 @@ var Flower = function (originX,originY) {
 }
 
 var Raindrop = function (originX,originY) {
-	this.originX = originX;
-	this.originY = originY;
+	this.x = originX;
+	this.y = originY;
 
 	this.display = function() {
-		var x = this.originX;
-		var y = this.originY;
-
 		fill(0, 51, 204);
 		noStroke();
-		ellipse(x, y, 5, 5);
+		ellipse(this.x, this.y, 5, 5);
 	}
 
-	Raindrop.prototype.fall = function() {
-		this.originY = (this.originY + random(1,10));
-		// if (Raindrop.prototype < windowHeight/3*2) {
-		// 	Raindrop.prototype == 0);
-		// }
-
-		// loop var i ?
-		//try mouseX + i, try math functions ?
+	this.fall = function() {
+		this.y = (this.y + random(1,10));
 	}
 }
 
@@ -76,6 +67,9 @@ function draw() {
   	for (var i = 0; i < raindrops.length; i++) {
   		raindrops[i].display();
   		raindrops[i].fall();
+  		if (raindrops[i].y > random(windowHeight/3*2, (windowHeight*1.5))) {
+  			raindrops.splice(i,1);
+		}
   	}
  }
 
