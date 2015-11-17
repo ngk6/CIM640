@@ -19,6 +19,8 @@ var WordBubble = function (word) {
 	this.xspeed = random(1, 2);
 	this.yspeed = random(1, 2);
 	this.word = word;
+	this.backgroundColor = 	color(random(255),random(255));
+
 	
 	this.move = function() {
 		this.x = this.x + this.xspeed;
@@ -32,9 +34,13 @@ var WordBubble = function (word) {
 	}
 
 	this.display = function() {
-		ellipse(this.x, this.y, this.diameter, this.diameter);
+		fill('Black');
 		textAlign(CENTER);
 		text(this.word, this.x, this.y);
+
+		fill(this.backgroundColor);
+		ellipse(this.x, this.y, this.diameter, this.diameter);
+
 	}
 }
 
