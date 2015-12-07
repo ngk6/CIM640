@@ -1,58 +1,40 @@
-var wordBubbles = [];
 var mostrecentword = "";
 
-// var WordBubble = function (word) {
-// 	this.x = random(width);
-// 	this.y = random(height);
-// 	this.diameter = 80;
-// 	this.xspeed = random(1, 1.5);
-// 	this.yspeed = random(1, 1.5);
-// 	this.word = word;
-// 	this.backgroundColor = color(random(255),random(255));
-// 	// this.bubbleSprite = createSprite(WordBubble);
-// 	//see custom draw Sprite ex.
+var popModeOn = false;
+var bounceModeOn = false;
+var partyModeOn = false;
 
-	
-// 	this.move = function() {
-// 		this.x = this.x + this.xspeed;
-// 		this.y = this.y + this.yspeed;
-// 		if (this.y > height || this.y < 0) {
-// 			this.yspeed = - this.yspeed;
-// 		}
-// 		if (this.x > width || this.x < 0) {
-// 			this.xspeed = - this.xspeed;
-// 		}
-// 	}
-
-// 	this.display = function() {
-// 		fill(this.backgroundColor);
-// 		ellipse(this.x, this.y, this.diameter, this.diameter);
-
-// 		fill('black');
-// 		textAlign(CENTER);
-// 		text(this.word, this.x, this.y);
-// 	}
-// }
-
-// var BubblesCollide = function() {
-
-// }
+var wordBubbles;
+var spriteSize = 80;
 
 function popMode() {
-	console.log('Popped');
+	popModeOn = !popModeOn;
+}
+
+function bounceMode() {
+	bounceModeOn = !bounceModeOn;
+}
+
+function partyMode() {
+	partyModeOn = !partyModeOn;
 }
 
 function setup() {
-	// inp = createInput('City');
-	// inp.position(100, 30);
-
+	createCanvas(windowWidth, windowHeight);
+	wordBubbles = new Group();
 
 	var button = createButton('Pop!');
   	button.position(250, 30);
   	button.mousePressed(popMode);
-  
-   	createCanvas(windowWidth, windowHeight);
-   	
+
+  	var button = createButton('Bounce!');
+  	button.position(250, 60);
+  	button.mousePressed(bounceMode);
+
+  	var button = createButton('Party!');
+  	button.position(250, 90);
+  	button.mousePressed(partyMode);
+ 
 	myRec.onResult = parseResult; // recognition callback
 	myRec.onError = handleError;
 	myRec.onEnd = recognitionEnded;
@@ -62,11 +44,20 @@ function setup() {
 
 function draw() {
 	background('white');
+	// wordBubbles.collide(wordBubbles);
 
-	// for (var i = 0; i < wordBubbles.length; i++) {
-	// 	wordBubbles[i].move();
-	// 	wordBubbles[i].display();
-	// }
+
+
+	if (bounceModeOn) {
+		wordBubbles.bounce(wordBubbles);
+	} 
+
+	if (partyModeOn) {
+		for(var i = 0; i<wordBubbles.length; i++) {
+  			var w = wordBubbles[i];
+			wordBubbles.attractionPoint(.2, mouseX, mouseY);
+		}
+	}
 
 	for(var i=0; i<allSprites.length; i++) {
 	  var s = allSprites[i];
@@ -100,27 +91,34 @@ myRec.interimResults = false; // allow partial recognition (faster, less accurat
 function parseResult() {
 	mostrecentword = myRec.resultString.split(' ').pop();
 
-	var wordBubbleSprite = createSprite(random(windowWidth),random(windowHeight), 80, 80);
+	var wordBubbleSprite = createSprite(random(windowWidth/2),random(windowHeight/2), spriteSize, spriteSize);
 	wordBubbleSprite.word = mostrecentword;
-	wordBubbleSprite.draw = spriteDraw;
-	wordBubbleSprite.addSpeed(random(5),random(360));
-	wordBubbles.push(wordBubbleSprite);
+	wordBubbleSprite.addSpeed(random(2),random(50));
 
-	// wordBubbles.push(new WordBubble(mostrecentword));
+	wordBubbles.add(wordBubbleSprite);
+	wordBubbleSprite.mass = 1;
+	// wordBubbleSprite.mouseActive = true;
+	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
+	wordBubbleSprite.draw = function () {
+		fill(128, 224, 255, 90);
+		stroke(128, 224, 255);
+		ellipse(0, 0, spriteSize, spriteSize);
 
+		fill('black');
+		noStroke();
+		textAlign(CENTER);
+		text(this.word, 0, 0);
+
+	}
+	wordBubbleSprite.onMousePressed = function() {
+		console.log("PRESSED SPRITE");
+		if (popModeOn) {
+			this.remove();
+		}
+	}
+	// wordBubbleSprite.debug = true;
 	console.log(mostrecentword);	
 }
-
-function spriteDraw () {
-	fill('Ivory');
-	ellipse(this.position.x, this.position.y, this.height, this.width);
-
-	fill('black');
-	textAlign(CENTER);
-	text(this.word, this.position.x, this.position.y);
-}
-				
-  // draw stuff here
 
 function recognitionEnded () {
 	mostrecentword = myRec.resultString;//.split(' ').pop();
