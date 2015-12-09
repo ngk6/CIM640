@@ -1,5 +1,7 @@
 var mostrecentword = "";
 
+var face;
+
 var popModeOn = false;
 var bounceModeOn = false;
 var partyModeOn = false;
@@ -22,6 +24,9 @@ function partyMode() {
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	wordBubbles = new Group();
+
+	face = createSprite(random(0, width), random(0,height));
+	face.addAnimation("normal","assets/face.png");
 
 	var button = createButton('Pop!');
   	button.position(250, 30);
@@ -46,16 +51,21 @@ function draw() {
 	background('white');
 	// wordBubbles.collide(wordBubbles);
 
-
+	face.position.x = mouseX;
+	face.position.y = mouseY;
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
 	} 
 
 	if (partyModeOn) {
-		for(var i = 0; i<wordBubbles.length; i++) {
-  			var w = wordBubbles[i];
-			wordBubbles.attractionPoint(.2, mouseX, mouseY);
+		if(mouseIsPressed) {
+   	 //the rotation is not part of the spinning animation
+    	face.rotation -= 10;
+    	//wordBubbleSprite.rotation -= 10;
+		// for(var i = 0; i<wordBubbles.length; i++) {
+  // 			var w = wordBubbles[i];
+		// 	wordBubbles.attractionPoint(.2, mouseX, mouseY);
 		}
 	}
 
@@ -82,6 +92,7 @@ function draw() {
 	    } 
 	  }
 	drawSprites();
+	drawSprite(face);
 }
 
 var myRec = new p5.SpeechRec(); // new P5.SpeechRec object
@@ -109,15 +120,23 @@ function parseResult() {
 		textAlign(CENTER);
 		text(this.word, 0, 0);
 
+		if (partyModeOn) {
+			//face.rotation -= 10;
+    		wordBubbleSprite.rotation -= 10;
+    		//wordBubbleSprite.color = random(0);
+		}
 	}
+
+
 	wordBubbleSprite.onMousePressed = function() {
 		console.log("PRESSED SPRITE");
 		if (popModeOn) {
 			this.remove();
 		}
-	}
-	// wordBubbleSprite.debug = true;
+		
+	wordBubbleSprite.debug = false;
 	console.log(mostrecentword);	
+}
 }
 
 function recognitionEnded () {
