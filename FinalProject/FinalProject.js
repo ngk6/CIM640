@@ -60,12 +60,7 @@ function draw() {
 
 	if (partyModeOn) {
 		if(mouseIsPressed) {
-   	 //the rotation is not part of the spinning animation
-    	face.rotation -= 10;
-    	//wordBubbleSprite.rotation -= 10;
-		// for(var i = 0; i<wordBubbles.length; i++) {
-  // 			var w = wordBubbles[i];
-		// 	wordBubbles.attractionPoint(.2, mouseX, mouseY);
+    		face.rotation -= 10;
 		}
 	}
 
@@ -101,6 +96,7 @@ myRec.interimResults = false; // allow partial recognition (faster, less accurat
 
 function parseResult() {
 	mostrecentword = myRec.resultString.split(' ').pop();
+	
 
 	var wordBubbleSprite = createSprite(random(windowWidth/2),random(windowHeight/2), spriteSize, spriteSize);
 	wordBubbleSprite.word = mostrecentword;
@@ -111,6 +107,11 @@ function parseResult() {
 	// wordBubbleSprite.mouseActive = true;
 	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
 	wordBubbleSprite.draw = function () {
+		// var startColor = color(0, 0, 255);
+		// var endColor = color(255, 0, 0);
+		// counter = 0;
+		// wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
+
 		fill(128, 224, 255, 90);
 		stroke(128, 224, 255);
 		ellipse(0, 0, spriteSize, spriteSize);
@@ -123,10 +124,23 @@ function parseResult() {
 		if (partyModeOn) {
 			//face.rotation -= 10;
     		wordBubbleSprite.rotation -= 10;
-    		//wordBubbleSprite.color = random(0);
+    		//wordBubbleSprite.wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
 		}
 	}
 
+	wordBubbleSprite.lerpColor = function() {
+		var startColor = color(0, 0, 255);
+		var endColor = color(255, 0, 0);
+		counter = 0;
+		wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
+
+		if (partyModeOn) {
+			wordBubbleSprite = (wordBubbleSpriteColor);
+			wordBubbleSprite.rotation -= 10;
+			counter = counter + .01;
+    		wordBubbleSprite.wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
+		}
+	}
 
 	wordBubbleSprite.onMousePressed = function() {
 		console.log("PRESSED SPRITE");
@@ -136,7 +150,7 @@ function parseResult() {
 		
 	wordBubbleSprite.debug = false;
 	console.log(mostrecentword);	
-}
+	}
 }
 
 function recognitionEnded () {
