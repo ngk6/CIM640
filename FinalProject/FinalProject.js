@@ -23,21 +23,22 @@ function partyMode() {
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
+	
 	wordBubbles = new Group();
 
 	face = createSprite(random(0, width), random(0,height));
 	face.addAnimation("normal","assets/face.png");
 
 	var button = createButton('Pop!');
-  	button.position(250, 30);
+  	button.position(windowWidth/2 - 140, windowHeight - 100);
   	button.mousePressed(popMode);
-
+  	
   	var button = createButton('Bounce!');
-  	button.position(250, 60);
+  	button.position(windowWidth/2 - 40, windowHeight - 100);
   	button.mousePressed(bounceMode);
 
   	var button = createButton('Party!');
-  	button.position(250, 90);
+  	button.position(windowWidth/2 + 88, windowHeight - 100);
   	button.mousePressed(partyMode);
  
 	myRec.onResult = parseResult; // recognition callback
@@ -48,8 +49,12 @@ function setup() {
 }
 
 function draw() {
-	background('white');
-	// wordBubbles.collide(wordBubbles);
+	//background(179, 240, 255);
+	background(26, 211, 255);
+
+	fill(255, 219, 102);
+	noStroke();
+	rect(0, windowHeight/3*2, width, windowHeight/3);
 
 	face.position.x = mouseX;
 	face.position.y = mouseY;
@@ -58,13 +63,7 @@ function draw() {
 		wordBubbles.bounce(wordBubbles);
 	} 
 
-	if (partyModeOn) {
-		if(mouseIsPressed) {
-    		face.rotation -= 10;
-		}
-	}
-
-	for(var i=0; i<allSprites.length; i++) {
+	for (var i = 0; i < allSprites.length; i++) {
 	  var s = allSprites[i];
 	  if(s.position.x<0) {
 	    s.position.x = 1;
@@ -96,50 +95,44 @@ myRec.interimResults = false; // allow partial recognition (faster, less accurat
 
 function parseResult() {
 	mostrecentword = myRec.resultString.split(' ').pop();
-	
 
 	var wordBubbleSprite = createSprite(random(windowWidth/2),random(windowHeight/2), spriteSize, spriteSize);
 	wordBubbleSprite.word = mostrecentword;
 	wordBubbleSprite.addSpeed(random(2),random(50));
-
 	wordBubbles.add(wordBubbleSprite);
 	wordBubbleSprite.mass = 1;
-	// wordBubbleSprite.mouseActive = true;
+	
 	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
+	
 	wordBubbleSprite.draw = function () {
-		// var startColor = color(0, 0, 255);
-		// var endColor = color(255, 0, 0);
-		// counter = 0;
-		// wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
 
-		fill(128, 224, 255, 90);
-		stroke(128, 224, 255);
+		if (partyModeOn) {
+			face.rotation -= 10;
+    		this.rotation -= 10;
+    		mass = 5;
+    		fill(color(random(0, 255),random(0, 255),random(0, 255)));
+		} else {
+			//fill(128, 224, 255, 90);
+			//fill(229, 250, 255, 98);
+			fill(179, 255, 255, 90);
+
+		}
+		
+		strokeWeight(2);
+		//stroke(128, 224, 255);
+		//stroke(0, 184, 230);
+		//stroke(0, 50, 102);
+		stroke(255);
 		ellipse(0, 0, spriteSize, spriteSize);
 
-		fill('black');
+		//fill(0, 76, 128);
+		fill(0, 50, 102);
 		noStroke();
 		textAlign(CENTER);
+		textSize(14);
+		textFont("Verdana");
 		text(this.word, 0, 0);
 
-		if (partyModeOn) {
-			//face.rotation -= 10;
-    		wordBubbleSprite.rotation -= 10;
-    		//wordBubbleSprite.wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
-		}
-	}
-
-	wordBubbleSprite.lerpColor = function() {
-		var startColor = color(0, 0, 255);
-		var endColor = color(255, 0, 0);
-		counter = 0;
-		wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
-
-		if (partyModeOn) {
-			wordBubbleSprite = (wordBubbleSpriteColor);
-			wordBubbleSprite.rotation -= 10;
-			counter = counter + .01;
-    		wordBubbleSprite.wordBubbleSpriteColor = lerpColor(startColor, endColor, counter);
-		}
 	}
 
 	wordBubbleSprite.onMousePressed = function() {
@@ -162,9 +155,3 @@ function recognitionEnded () {
 function handleError() {
 	console.log("Recognition Error");
 }
-
-
-
-
-
-
