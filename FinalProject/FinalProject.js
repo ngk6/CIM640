@@ -9,6 +9,12 @@ var partyModeOn = false;
 var wordBubbles;
 var spriteSize = 80;
 
+var bubbleSound;
+
+function preload() {
+	bubbleSound = loadSound('assets/bubbles.mp3');
+}
+
 function popMode() {
 	popModeOn = !popModeOn;
 }
@@ -29,16 +35,16 @@ function setup() {
 	face = createSprite(random(0, width), random(0,height));
 	face.addAnimation("normal","assets/face.png");
 
-	var button = createButton('Pop!');
-  	button.position(windowWidth/2 - 140, windowHeight - 100);
+	var button = createButton('Pop');
+  	button.position(windowWidth/2 - 140, windowHeight - 80);
   	button.mousePressed(popMode);
   	
-  	var button = createButton('Bounce!');
-  	button.position(windowWidth/2 - 40, windowHeight - 100);
+  	var button = createButton('Bounce');
+  	button.position(windowWidth/2 - 40, windowHeight - 80);
   	button.mousePressed(bounceMode);
 
-  	var button = createButton('Party!');
-  	button.position(windowWidth/2 + 88, windowHeight - 100);
+  	var button = createButton('Party');
+  	button.position(windowWidth/2 + 88, windowHeight - 80);
   	button.mousePressed(partyMode);
  
 	myRec.onResult = parseResult; // recognition callback
@@ -54,7 +60,8 @@ function draw() {
 
 	fill(255, 219, 102);
 	noStroke();
-	rect(0, windowHeight/3*2, width, windowHeight/3);
+	//rect(0, windowHeight/3*2, width, windowHeight/3);
+	ellipse(windowWidth/2, windowHeight, width + 100, windowHeight/3);
 
 	face.position.x = mouseX;
 	face.position.y = mouseY;
@@ -109,7 +116,6 @@ function parseResult() {
 		if (partyModeOn) {
 			face.rotation -= 10;
     		this.rotation -= 10;
-    		mass = 5;
     		fill(color(random(0, 255),random(0, 255),random(0, 255)));
 		} else {
 			//fill(128, 224, 255, 90);
@@ -129,7 +135,7 @@ function parseResult() {
 		fill(0, 50, 102);
 		noStroke();
 		textAlign(CENTER);
-		textSize(14);
+		textSize(13);
 		textFont("Verdana");
 		text(this.word, 0, 0);
 
@@ -139,6 +145,7 @@ function parseResult() {
 		console.log("PRESSED SPRITE");
 		if (popModeOn) {
 			this.remove();
+			bubbleSound.play();
 		}
 		
 	wordBubbleSprite.debug = false;
