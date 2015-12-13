@@ -1,6 +1,6 @@
 var mostrecentword = "";
 
-var face;
+var fish;
 
 var popModeOn = false;
 var bounceModeOn = false;
@@ -32,8 +32,8 @@ function setup() {
 	
 	wordBubbles = new Group();
 
-	face = createSprite(random(0, width), random(0,height));
-	face.addAnimation("normal","assets/face.png");
+	fish = createSprite(random(0, width), random(0,height));
+	fish.addAnimation("normal","assets/fish.png");
 
 	var button = createButton('Pop');
   	button.position(windowWidth/2 - 140, windowHeight - 80);
@@ -58,13 +58,14 @@ function draw() {
 	//background(179, 240, 255);
 	background(26, 211, 255);
 
-	fill(255, 219, 102);
+	fill(255, 219, 102); 	// orangey 
+	//fill(230, 172, 0); //browner
 	noStroke();
 	//rect(0, windowHeight/3*2, width, windowHeight/3);
 	ellipse(windowWidth/2, windowHeight, width + 100, windowHeight/3);
 
-	face.position.x = mouseX;
-	face.position.y = mouseY;
+	fish.position.x = mouseX;
+	fish.position.y = mouseY;
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
@@ -93,7 +94,7 @@ function draw() {
 	    } 
 	  }
 	drawSprites();
-	drawSprite(face);
+	drawSprite(fish);
 }
 
 var myRec = new p5.SpeechRec(); // new P5.SpeechRec object
@@ -114,7 +115,7 @@ function parseResult() {
 	wordBubbleSprite.draw = function () {
 
 		if (partyModeOn) {
-			face.rotation -= 10;
+			fish.rotation -= 10;
     		this.rotation -= 10;
     		fill(color(random(0, 255),random(0, 255),random(0, 255)));
 		} else {
