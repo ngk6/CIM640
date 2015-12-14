@@ -81,16 +81,10 @@ function draw() {
 	fish.position.y = mouseY;
 	fish.mass = 1;
 	fish.setCollider("circle", 0, 0, spriteSize/1.8);
-	//fish.rotateToDirection = true;
-	//rotate(radians(fish.getDirection()));
-
-	//foshy.draw = function() {
-	// 	 image(fish, this.deltaX*2,this.deltaY*2);
-	// }
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
-		fish.displace(wordBubbles);
+		fish.bounce(wordBubbles);
 	} 
 
 	for (var i = 0; i < allSprites.length; i++) {
@@ -124,6 +118,13 @@ myRec.continuous = false; // do continuous recognition
 myRec.interimResults = false; // allow partial recognition (faster, less accurate)
 
 function parseResult() {
+
+	// foshy.draw = function() {
+	// 	rotate(radians(fish.getDirection()));
+	// 	fish.rotateToDirection = true;
+	// 	//image(fish, this.deltaX*2,this.deltaY*2);
+	// }
+
 	mostrecentword = myRec.resultString.split(' ').pop();
 
 	var wordBubbleSprite = createSprite(random(windowWidth/2),random(windowHeight/2), spriteSize, spriteSize);
@@ -137,7 +138,7 @@ function parseResult() {
 	wordBubbleSprite.draw = function () {
 
 		if (partyModeOn) {
-    		//fish.attractionPoint(1, mouseX, mouseY);
+    		// fish.attractionPoint(1, mouseX, mouseY);
     		// this.color(partyColor);
     		fill(color(random(0, 255),random(0, 255),random(0, 255)));
     		// startColor = color(random(0, 255),random(0, 255),random(0, 255)));
