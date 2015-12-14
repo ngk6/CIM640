@@ -109,7 +109,7 @@ function draw() {
 
 	fish.position.x = mouseX;
 	fish.position.y = mouseY;
-	
+
 	if(fish.position > fish.previousPosition) {
     	fish.mirrorX(-1);
   	} else if(fish.position < fish.previousPosition) {
@@ -126,6 +126,8 @@ function draw() {
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
+		//wordBubbles.bounce(fish);
+		//fish.mass = 1;
 		//fish.bounce(wordBubbles);
 	} 
 
