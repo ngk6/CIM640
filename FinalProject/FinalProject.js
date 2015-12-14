@@ -1,7 +1,6 @@
 var mostrecentword = "";
 
 var fish;
-var foshy;
 
 var popModeOn = false;
 var bounceModeOn = false;
@@ -27,14 +26,35 @@ function preload() {
 
 function popMode() {
 	popModeOn = !popModeOn;
+	if (popModeOn) {
+		popButton.removeClass('normal');
+		popButton.addClass('pressed');
+	} else {
+		popButton.removeClass('pressed');
+		popButton.addClass('normal');
+	}
 }
 
 function bounceMode() {
 	bounceModeOn = !bounceModeOn;
+	if (bounceModeOn) {
+		bounceButton.removeClass('normal');
+		bounceButton.addClass('pressed');
+	} else {
+		bounceButton.removeClass('pressed');
+		bounceButton.addClass('normal');
+	}
 }
 
 function partyMode() {
 	partyModeOn = !partyModeOn;
+	if (partyModeOn) {
+		partyButton.removeClass('normal');
+		partyButton.addClass('pressed');
+	} else {
+		partyButton.removeClass('pressed');
+		partyButton.addClass('normal');
+	}
 }
 
 function setup() {
@@ -48,18 +68,23 @@ function setup() {
 
 	fish = createSprite(random(0, width), random(0,height));
 	fish.addAnimation("normal","assets/fish.png");
+	fish.mass = 1;
+	fish.setCollider("circle", 0, 0, spriteSize/1.8);
 
-	var button = createButton('Pop');
-  	button.position(windowWidth/2 - 140, windowHeight - 70);
-  	button.mousePressed(popMode);
-  	
-	var button = createButton('Bounce');
-  	button.position(windowWidth/2 - 40, windowHeight - 70);
-  	button.mousePressed(bounceMode);
+	popButton = createButton('Pop');
+  	popButton.position(windowWidth/2 - 140, windowHeight - 70);
+	popButton.mousePressed(popMode);
+  	popButton.addClass('normal');
 
-	var button = createButton('Party');
-  	button.position(windowWidth/2 + 88, windowHeight - 70);
-  	button.mousePressed(partyMode);
+  	bounceButton = createButton('Bounce');
+  	bounceButton.position(windowWidth/2 - 40, windowHeight - 70);
+	bounceButton.mousePressed(bounceMode);
+  	bounceButton.addClass('normal');
+
+  	partyButton = createButton('Party');
+  	partyButton.position(windowWidth/2 + 80, windowHeight - 70);
+	partyButton.mousePressed(partyMode);
+  	partyButton.addClass('normal');
  
 	myRec.onResult = parseResult; // recognition callback
 	myRec.onError = handleError;
@@ -69,22 +94,39 @@ function setup() {
 }
 
 function draw() {
-	//background(26, 211, 255); // medium turquise
-	background(77, 148, 255); // darker
-
+	background(77, 148, 255);
 	stroke(230, 172, 0); // brown
 	strokeWeight(3);
 	fill(255, 219, 102); // orangey 
 	ellipse(windowWidth/2, windowHeight, width + 100, windowHeight/3);
 
+	noStroke();
+	textAlign(CENTER);
+	textStyle(NORMAL);
+	textSize(30);
+	textFont("Verdana");
+	text("Wubbles!", windowWidth/2, windowHeight/2 - 250);
+
 	fish.position.x = mouseX;
 	fish.position.y = mouseY;
-	fish.mass = 1;
-	fish.setCollider("circle", 0, 0, spriteSize/1.8);
+	
+	if(fish.position > fish.previousPosition) {
+    	fish.mirrorX(-1);
+  	} else if(fish.position < fish.previousPosition) {
+    	fish.mirrorX(1);
+ 	 	}
+
+ 	// rotate fish, 
+ 	// fish.velocity.x = (fish.position.x)/10;
+ 	// fish.velocity.y = (fish.position.y)/10; 	
+ 	// fish.maxSpeed = 10;	
+ 	// fish.getDirection();
+	// rotate(radians(fish.getDirection()));
+	// fish.rotateToDirection = true;
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
-		fish.bounce(wordBubbles);
+		//fish.bounce(wordBubbles);
 	} 
 
 	for (var i = 0; i < allSprites.length; i++) {
@@ -119,12 +161,6 @@ myRec.interimResults = false; // allow partial recognition (faster, less accurat
 
 function parseResult() {
 
-	// foshy.draw = function() {
-	// 	rotate(radians(fish.getDirection()));
-	// 	fish.rotateToDirection = true;
-	// 	//image(fish, this.deltaX*2,this.deltaY*2);
-	// }
-
 	mostrecentword = myRec.resultString.split(' ').pop();
 
 	var wordBubbleSprite = createSprite(random(windowWidth/2),random(windowHeight/2), spriteSize, spriteSize);
@@ -138,13 +174,13 @@ function parseResult() {
 	wordBubbleSprite.draw = function () {
 
 		if (partyModeOn) {
-    		// fish.attractionPoint(1, mouseX, mouseY);
-    		// this.color(partyColor);
+    		
     		fill(color(random(0, 255),random(0, 255),random(0, 255)));
-    		// startColor = color(random(0, 255),random(0, 255),random(0, 255)));
-    		// endColor = color(random(0, 255),random(0, 255),random(0, 255)));
-    		// counter = .01;
-    		// partyColor = (lerpColor(startColor, endColor, counter));
+    		startColor = color(random(0, 255),random(0, 255),random(0, 255));
+    		endColor = color(random(0, 255),random(0, 255),random(0, 255));
+    		counter = .01;
+    		partyColor = (lerpColor(startColor, endColor, counter));
+    		this.color(partyColor);
 		} else {
 			fill(179, 255, 255, 90);
 		}
@@ -167,11 +203,6 @@ function parseResult() {
 		if (popModeOn) {
 			this.remove();
 			bubbleSound.play();
-	// 		popButton.removeClass('normal');
-	// 		popButton.addClass('pressed');
-	// 	} else {
-	// 		popButton.removeClass('pressed');
-	// 		popButton.addClass('normal');
 		}
 	}
 
@@ -180,7 +211,6 @@ function parseResult() {
 	console.log(mostrecentword);	
 	}
 }
-
 
 function recognitionEnded () {
 	mostrecentword = myRec.resultString;//.split(' ').pop();
