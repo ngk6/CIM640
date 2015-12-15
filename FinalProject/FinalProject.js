@@ -62,12 +62,12 @@ function setup() {
 	
 	wordBubbles = new Group();
 
-	var startColor = color(random(0, 255),random(0, 255),random(0, 255));
-	var endColor = color(random(0, 255),random(0, 255),random(0, 255));
-	counter = 0;
+	// startColor = color(random(0, 255),random(0, 255),random(0, 255));
+	// endColor = color(random(0, 255),random(0, 255),random(0, 255));
+	// counter = 0;
 
 	fish = createSprite(random(0, width), random(0,height));
-	fish.addAnimation("normal","assets/fish.png");
+	fish.addAnimation("normal","assets/fish2.png");
 	fish.mass = 1;
 	fish.setCollider("circle", 0, 0, spriteSize/1.8);
 
@@ -126,9 +126,9 @@ function draw() {
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
-		//wordBubbles.bounce(fish);
-		//fish.mass = 1;
-		//fish.bounce(wordBubbles);
+		wordBubbles.bounce(fish);
+		fish.mass = 1;
+		fish.displace(wordBubbles);
 	} 
 
 	for (var i = 0; i < allSprites.length; i++) {
@@ -170,19 +170,23 @@ function parseResult() {
 	wordBubbleSprite.addSpeed(random(2),random(50));
 	wordBubbles.add(wordBubbleSprite);
 	wordBubbleSprite.mass = 1;
-	
 	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
 	
 	wordBubbleSprite.draw = function () {
+		wordBubbleSprite.startColor = color(random(0, 255), random(0, 255), random(0, 255));
+    	wordBubbleSprite.endColor = color(random(0, 255), random(0, 255), random(0, 255));
+    	wordBubbleSprite.counter = 0;
 
 		if (partyModeOn) {
-    		
-    		fill(color(random(0, 255),random(0, 255),random(0, 255)));
-    		startColor = color(random(0, 255),random(0, 255),random(0, 255));
-    		endColor = color(random(0, 255),random(0, 255),random(0, 255));
-    		counter = .01;
-    		partyColor = (lerpColor(startColor, endColor, counter));
-    		this.color(partyColor);
+    		this.counter += .01;
+    		if (this.counter >= 1) {
+    			var startColor = this.startColor;
+    			this.startColor = this.endColor;
+    			this.endColor = startColor;
+    			this.counter = 0;
+    			}
+    			partyColor = (lerpColor(startColor, endColor, counter));
+    			fill(partyColor);
 		} else {
 			fill(179, 255, 255, 90);
 		}
