@@ -26,9 +26,13 @@ function preload() {
 
 function popMode() {
 	popModeOn = !popModeOn;
+
 	if (popModeOn) {
 		popButton.removeClass('normal');
 		popButton.addClass('pressed');
+		if (bounceModeOn) {
+			bounceMode();
+		}
 	} else {
 		popButton.removeClass('pressed');
 		popButton.addClass('normal');
@@ -40,6 +44,9 @@ function bounceMode() {
 	if (bounceModeOn) {
 		bounceButton.removeClass('normal');
 		bounceButton.addClass('pressed');
+		if (popModeOn) {
+			popMode();
+		}
 	} else {
 		bounceButton.removeClass('pressed');
 		bounceButton.addClass('normal');
@@ -61,10 +68,6 @@ function setup() {
 	createCanvas(windowWidth, windowHeight);
 	
 	wordBubbles = new Group();
-
-	startColor = color(random(0, 255),random(0, 255),random(0, 255));
-	endColor = color(random(0, 255),random(0, 255),random(0, 255));
-	counter = 0;
 
 	fish = createSprite(random(0, width), random(0,height));
 	fish.addAnimation("normal","assets/fish2.png");
@@ -100,55 +103,48 @@ function draw() {
 	fill(255, 219, 102); // orangey 
 	ellipse(windowWidth/2, windowHeight, width + 100, windowHeight/3);
 
-	noStroke();
+	stroke("#de257e");
 	textAlign(CENTER);
-	textStyle(NORMAL);
-	textSize(30);
-	textFont("Verdana");
-	text("Wubbles!", windowWidth/2, windowHeight/2 - 250);
+	textSize(windowWidth/8);
+	textFont("Impact");
+	text("WUBBLES!", windowWidth/2, windowHeight - 450);
 
 	fish.position.x = mouseX;
 	fish.position.y = mouseY;
 
-	if(fish.position > fish.previousPosition) {
-    	fish.mirrorX(-1);
-  	} else if(fish.position < fish.previousPosition) {
-    	fish.mirrorX(1);
- 	 	}
-
- 	// rotate fish, 
- 	// fish.velocity.x = (fish.position.x)/10;
- 	// fish.velocity.y = (fish.position.y)/10; 	
- 	// fish.maxSpeed = 10;	
- 	// fish.getDirection();
-	// rotate(radians(fish.getDirection()));
-	// fish.rotateToDirection = true;
+	if (fish.position == fish.previousPosition) {
+		}
+	    else if (fish.position > fish.previousPosition) {
+		fish.mirrorX(-1);
+ 		}
+ 	    else {
+   		fish.mirrorX(1);
+   		}
 
 	if (bounceModeOn) {
 		wordBubbles.bounce(wordBubbles);
-		wordBubbles.bounce(fish);
 		fish.mass = 1;
 		fish.displace(wordBubbles);
 	} 
 
 	for (var i = 0; i < allSprites.length; i++) {
-	  var s = allSprites[i];
-	  if(s.position.x<0) {
+		var s = allSprites[i];
+	 	if (s.position.x<0) {
 	    s.position.x = 1;
 	    s.velocity.x = abs(s.velocity.x);
-	  }
+	  	}
 	  
-	  if(s.position.x > windowWidth) {
+	 	if (s.position.x > windowWidth) {
 	    s.position.x = width-1;
 	    s.velocity.x = -abs(s.velocity.x);
 	    }
 	  
-	  if(s.position.y < 0) {
+	 	if (s.position.y < 0) {
 	    s.position.y = 1;
 	    s.velocity.y = abs(s.velocity.y);
-	  }
+	  	}
 	  
-	  if(s.position.y > windowHeight) {
+	 	if (s.position.y > windowHeight) {
 	    s.position.y = height-1;
 	    s.velocity.y = -abs(s.velocity.y);
 	    } 
@@ -172,9 +168,10 @@ function parseResult() {
 	wordBubbleSprite.mass = 1;
 	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
 	
-	wordBubbleSprite.startColor = color(random(0, 255), random(0, 255), random(0, 255));
-  	wordBubbleSprite.endColor = color(random(0, 255), random(0, 255), random(0, 255));
+	wordBubbleSprite.startColor = color(random(0, 255), random(0, 255), random(0, 255), 160);
+  	wordBubbleSprite.endColor = color(random(0, 255), random(0, 255), random(0, 255), 160);
   	wordBubbleSprite.counter = 0;
+  	wordBubbleSprite.restitution = 1;
 
 	wordBubbleSprite.draw = function () {
 
@@ -186,13 +183,13 @@ function parseResult() {
     			this.endColor = startColor;
     			this.counter = 0;
     			}
-    			partyColor = (lerpColor(startColor, endColor, counter));
+    			partyColor = (lerpColor(this.startColor, this.endColor, this.counter));
     			fill(partyColor);
 		} else {
 			fill(179, 255, 255, 90);
 		}
 		
-		strokeWeight(2);
+		strokeWeight(1);
 		stroke(255);
 		ellipse(0, 0, spriteSize, spriteSize);
 
@@ -221,7 +218,7 @@ function parseResult() {
 
 function recognitionEnded () {
 	mostrecentword = myRec.resultString;//.split(' ').pop();
-	console.log("Recognition Ended: " + mostrecentword);
+	console.log("Recognition Ended:" + mostrecentword);
 	myRec.start();
 }
 
