@@ -1,3 +1,6 @@
+// Wubbles! CIM 640 Final Project
+// by Natalie Kaminsky
+
 var mostrecentword = "";
 
 var fish;
@@ -22,6 +25,8 @@ var partyButton;
 
 function preload() {
 	bubbleSound = loadSound('assets/bubbles.mp3');
+	// sound credit: Glaneur de sons, "bubbles (1)"
+	// at http://www.freesound.org/people/Glaneur%20de%20sons/sounds/104949/
 }
 
 function popMode() {
