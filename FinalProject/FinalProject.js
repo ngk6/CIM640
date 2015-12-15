@@ -62,9 +62,9 @@ function setup() {
 	
 	wordBubbles = new Group();
 
-	// startColor = color(random(0, 255),random(0, 255),random(0, 255));
-	// endColor = color(random(0, 255),random(0, 255),random(0, 255));
-	// counter = 0;
+	startColor = color(random(0, 255),random(0, 255),random(0, 255));
+	endColor = color(random(0, 255),random(0, 255),random(0, 255));
+	counter = 0;
 
 	fish = createSprite(random(0, width), random(0,height));
 	fish.addAnimation("normal","assets/fish2.png");
@@ -172,10 +172,11 @@ function parseResult() {
 	wordBubbleSprite.mass = 1;
 	wordBubbleSprite.setCollider("circle", 0, 0, spriteSize/2);
 	
+	wordBubbleSprite.startColor = color(random(0, 255), random(0, 255), random(0, 255));
+  	wordBubbleSprite.endColor = color(random(0, 255), random(0, 255), random(0, 255));
+  	wordBubbleSprite.counter = 0;
+
 	wordBubbleSprite.draw = function () {
-		wordBubbleSprite.startColor = color(random(0, 255), random(0, 255), random(0, 255));
-    	wordBubbleSprite.endColor = color(random(0, 255), random(0, 255), random(0, 255));
-    	wordBubbleSprite.counter = 0;
 
 		if (partyModeOn) {
     		this.counter += .01;
